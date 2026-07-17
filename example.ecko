@@ -1,0 +1,19 @@
+# deque demo: a queue you can jump.
+import "./main.ecko"
+deque = main
+
+mut q = deque.new()
+for x in [1, 2, 3] {
+    q = deque.push_back(q, x)
+}
+q = deque.push_front(q, 0)  # jump to the front
+
+print("deque: {deque.to_list(q)}")
+print("front={deque.peek_front(q)} back={deque.peek_back(q)}")
+
+print("draining front-to-back:")
+while not deque.is_empty(q) {
+    r = deque.pop_front(q)
+    print("  {r[0]}")
+    q = r[1]
+}

@@ -1,0 +1,55 @@
+# Tests for the deque package - offline, deterministic.
+import std.test
+import "../main.ecko"
+deque = main
+
+test.case("push_back then pop_front is FIFO", || {
+    mut q = deque.new()
+    for x in [1, 2, 3] {
+        q = deque.push_back(q, x)
+    }
+    test.eq(deque.size(q), 3)
+    r = deque.pop_front(q)
+    test.eq(r[0], 1)
+    r2 = deque.pop_front(r[1])
+    test.eq(r2[0], 2)
+})
+
+test.case("operations at both ends", || {
+    mut q = deque.new()
+    q = deque.push_back(q, 1)
+    q = deque.push_front(q, 0)
+    q = deque.push_back(q, 2)
+    test.eq(deque.to_list(q), [0, 1, 2])
+    test.eq(deque.peek_front(q), 0)
+    test.eq(deque.peek_back(q), 2)
+    test.eq(deque.pop_front(q)[0], 0)
+    br = deque.pop_back(q)
+    test.eq(br[0], 2)
+    test.eq(deque.to_list(br[1]), [0, 1])
+})
+
+test.case("an empty deque", || {
+    test.ok(deque.is_empty(deque.new()), "empty")
+    test.eq(deque.peek_front(deque.new()), null)
+    test.eq(deque.size(deque.new()), 0)
+    caught = try { deque.pop_front(deque.new()) } catch (e) { get(e, "kind") }
+    test.eq(caught, "value")
+})
+
+test.case("from_list and to_list round-trip", || {
+    q = deque.from_list([1, 2, 3])
+    test.eq(deque.to_list(q), [1, 2, 3])
+    test.eq(deque.peek_front(q), 1)
+    test.eq(deque.peek_back(q), 3)
+})
+
+test.case("interleaved front/back operations stay consistent", || {
+    mut q = deque.new()
+    for x in [1, 2, 3] {
+        q = deque.push_back(q, x)
+    }
+    q = deque.pop_front(q)[1]  # drop 1
+    q = deque.push_front(q, 4)
+    test.eq(deque.to_list(q), [4, 2, 3])
+})

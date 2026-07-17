@@ -1,0 +1,58 @@
+# deque - a double-ended queue for Ecko, amortized O(1) at both ends.
+#
+#   import deque
+#
+#   q = deque.new()
+#   q = deque.push_back(q, 1)
+#   q = deque.push_front(q, 0)
+#   [x, q] = deque.pop_front(q)      # x = 0
+#   deque.peek_back(q)  deque.to_list(q)
+#
+# Represented as two stacks `{ f, b }`: the logical order (front to back) is
+# reverse(f) ++ b, so a push/pop at either end is a cheap stack operation, with
+# an occasional O(n) rebalance amortized away. Every operation returns a new
+# deque - nothing is mutated. Pure Ecko; no capabilities.
+
+export fn new() = { f: [], b: [] }
+
+export fn size(q) = len(q.f) + len(q.b)
+
+export fn is_empty(q) = size(q) == 0
+
+export fn push_front(q, x) = { f: push(q.f, x), b: q.b }
+
+export fn push_back(q, x) = { f: q.f, b: push(q.b, x) }
+
+export fn peek_front(q) {
+    if len(q.f) > 0 { last(q.f) } else if len(q.b) > 0 { q.b[0] } else { null }
+}
+
+export fn peek_back(q) {
+    if len(q.b) > 0 { last(q.b) } else if len(q.f) > 0 { q.f[0] } else { null }
+}
+
+# pop_front(q) -> [front, new_deque]. Raises kind-"value" if empty.
+export fn pop_front(q) {
+    if len(q.f) > 0 { [last(q.f), { f: take(q.f, len(q.f) - 1), b: q.b }] } else if len(q.b) > 0 {
+        rb = reverse(q.b)
+        [last(rb), { f: take(rb, len(rb) - 1), b: [] }]
+    } else { error({ kind: "value", message: "deque.pop_front: empty deque" }) }
+}
+
+# pop_back(q) -> [back, new_deque]. Raises kind-"value" if empty.
+export fn pop_back(q) {
+    if len(q.b) > 0 { [last(q.b), { f: q.f, b: take(q.b, len(q.b) - 1) }] } else if len(q.f) > 0 {
+        rf = reverse(q.f)
+        [last(rf), { f: [], b: take(rf, len(rf) - 1) }]
+    } else { error({ kind: "value", message: "deque.pop_back: empty deque" }) }
+}
+
+export fn to_list(q) {
+    mut out = reverse(q.f)
+    for x in q.b {
+        out = push(out, x)
+    }
+    out
+}
+
+export fn from_list(l) = { f: [], b: l }
