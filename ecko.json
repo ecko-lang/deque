@@ -1,6 +1,6 @@
 {
   "module": "github.com/ecko-sh/deque",
-  "version": "0.1.0",
+  "version": "0.9.1",
   "entrypoint": "main.ecko",
   "description": "A double-ended queue for Ecko: push/pop/peek at both ends, amortized O(1). Immutable two-stack deque. Pure - no capabilities.",
   "author": "Sean Nieuwoudt <sean@underwulf.com>",
