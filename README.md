@@ -1,7 +1,7 @@
-# deque
+# Deque - Ecko Std Lib Package
 
-A double-ended queue for [Ecko](https://ecko.sh), written in Ecko — push, pop,
-and peek at **both ends** with amortized O(1) cost. Pure — no capabilities.
+A double-ended queue for [Ecko](https://ecko.sh), written in Ecko - push, pop,
+and peek at **both ends** with amortized O(1) cost.
 
 ## Install
 
@@ -33,7 +33,7 @@ deque.to_list(q)                # [0, 1]
 | `size(q)` · `is_empty(q)` · `to_list(q)` | count / emptiness / a plain list |
 
 Represented as two stacks `{ f, b }` (order = `reverse(f) ++ b`), so each op is a
-cheap stack move with an occasional O(n) rebalance amortized away. Immutable —
+cheap stack move with an occasional O(n) rebalance amortized away. Immutable -
 every op returns a new deque.
 
 ## Testing
@@ -44,4 +44,4 @@ ecko test tests/
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
