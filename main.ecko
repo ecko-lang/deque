@@ -13,25 +13,36 @@
 # an occasional O(n) rebalance amortized away. Every operation returns a new
 # deque - nothing is mutated. Pure Ecko; no capabilities.
 
+## new() -> an empty deque. Deques are values, so every operation returns a
+## new one rather than mutating.
 export fn new() = { f: [], b: [] }
 
+## size(q) -> item count.
 export fn size(q) = len(q.f) + len(q.b)
 
+## is_empty(q) -> true when size is 0.
 export fn is_empty(q) = size(q) == 0
 
+## push_front(q, x) -> a new deque with `x` at the front.
+##
+## example:
+##   q = push_front(new(), 1)
 export fn push_front(q, x) = { f: push(q.f, x), b: q.b }
 
+## push_back(q, x) -> a new deque with `x` at the back.
 export fn push_back(q, x) = { f: q.f, b: push(q.b, x) }
 
+## peek_front(q) -> the front item, or null if empty. Does not remove it.
 export fn peek_front(q) {
     if len(q.f) > 0 { last(q.f) } else if len(q.b) > 0 { q.b[0] } else { null }
 }
 
+## peek_back(q) -> the back item, or null if empty. Does not remove it.
 export fn peek_back(q) {
     if len(q.b) > 0 { last(q.b) } else if len(q.f) > 0 { q.f[0] } else { null }
 }
 
-# pop_front(q) -> [front, new_deque]. Raises kind-"value" if empty.
+## pop_front(q) -> [front, new_deque]. Raises kind-"value" if empty.
 export fn pop_front(q) {
     if len(q.f) > 0 { [last(q.f), { f: take(q.f, len(q.f) - 1), b: q.b }] } else if len(q.b) > 0 {
         rb = reverse(q.b)
@@ -39,7 +50,7 @@ export fn pop_front(q) {
     } else { error({ kind: "value", message: "deque.pop_front: empty deque" }) }
 }
 
-# pop_back(q) -> [back, new_deque]. Raises kind-"value" if empty.
+## pop_back(q) -> [back, new_deque]. Raises kind-"value" if empty.
 export fn pop_back(q) {
     if len(q.b) > 0 { [last(q.b), { f: q.f, b: take(q.b, len(q.b) - 1) }] } else if len(q.f) > 0 {
         rf = reverse(q.f)
@@ -47,6 +58,7 @@ export fn pop_back(q) {
     } else { error({ kind: "value", message: "deque.pop_back: empty deque" }) }
 }
 
+## to_list(q) -> the items as a plain list, front to back.
 export fn to_list(q) {
     mut out = reverse(q.f)
     for x in q.b {
@@ -55,4 +67,5 @@ export fn to_list(q) {
     out
 }
 
+## from_list(l) -> a deque holding `l`, front to back. Inverse of `to_list`.
 export fn from_list(l) = { f: [], b: l }
