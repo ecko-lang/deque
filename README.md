@@ -6,7 +6,7 @@ and peek at **both ends** with amortized O(1) cost.
 ## Install
 
 ```bash
-ecko get github.com/ecko-sh/deque
+ecko get github.com/ecko-lang/deque
 ```
 
 ## Usage
